@@ -1,12 +1,48 @@
-alias home='cd /home/peterzen'
-alias ll='ls -l'
+alias sad="ssh-add ~/.ssh/id_ed25519_elgentos"
+
+# JeroenBoersma/docker-compose-development voor elgentos
+export PATH=/home/peter/development/bin:${PATH};
+alias cdw="cd /home/peter/development/workspace";
+
+# ls
 alias la='ls -a'
-alias pls=please
-alias please='sudo $(fc -ln -1)'
-alias shutdown='sudo shutdown 0'
-alias restart='sudo restart 0'
-alias python=/usr/bin/python3
-alias avr-gcc-comp1='avr-gcc -g -Os -std=gnu99 -mmcu=atmega328p -c'
-alias avr-gcc-comp2='avr-gcc -g -mmcu=atmega328p -o virtualglove.elf'
-alias avr-gcc-comp3='avr-objcopy -j .text -j .data -O ihex virtualglove.elf'
-alias django='python manage.py'
+
+# navigation
+alias home='cd ~'
+
+# system operations
+alias shutdown='sudo shutdown now'
+alias restart='sudo restart now'
+alias bye='dev down && shutdown'
+
+repo() {
+    repo=$(git remote -v | awk '{print $2}' | uniq | head -n1 | sed -e 's#\(git@\|\.git\)##g' -e 's#:#/#' -e 's#^#https://#');
+
+    if [ -n "${repo}" ]; then
+        echo "${repo}";
+        # open "${repo}";
+        return $?;
+    fi
+
+    return 1;
+}
+
+# code specific
+alias c="code"
+
+# magento
+alias cc="cache-clean --watch"
+
+bm() {
+    if [ "$1" = "up" ]; then
+        command bin/magento setup:upgrade
+    elif [ "$1" = "cc" ]; then
+        command bin/magento cache:cle
+    elif [ "$1" = "i:re" ]; then
+        command bin/magento index:reindex
+    elif [ "$1" = "i" ]; then
+        command bin/magento index:reindex
+    else
+        command bin/magento "$@"
+    fi
+}
